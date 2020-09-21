@@ -1,6 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Header from './Components/Header/index'
 import Form from './Components/Form/index'
+import Summary from './Components/Summary/index'
+import Result from './Components/Result/index'
+
 
 import styled from '@emotion/styled'
 
@@ -15,6 +18,20 @@ padding: 3rem
 `
 
 function App() {
+
+  const [summary, saveSummary] = useState({
+    quotation: 0,
+    data: {
+      brand: '',
+      year: '',
+      plan: ''
+    }
+  })
+  
+  //get data
+
+  const {data, quotation} = summary
+
   return (
     <Container>
       
@@ -23,7 +40,17 @@ function App() {
         title = 'Cotizador de Seguros'
       />
       <FormConatainer>
-          <Form/>
+        <Form
+          saveSummary={saveSummary}
+
+        />
+        <Summary 
+          data={data}
+        />
+        <Result 
+          quotation={quotation}
+        />
+        
       </FormConatainer>
       </Container>
   );

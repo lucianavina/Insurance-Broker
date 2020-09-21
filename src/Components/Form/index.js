@@ -1,5 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from '@emotion/styled'
+import { getPriceYear, calulateBrand, getPlan } from '../../Helper/index'
+
+
 
 const Field = styled.div`
     display: flex;
@@ -39,13 +42,97 @@ margin-top: 2rem;
 }
 `
 
-const Form = () => {
+const Error = styled.div`
+background-color: red;
+color: white;
+padding: 1rem;
+width: 100%;
+text-align: center;
+margin-bottom: 2rem
+
+`
+
+const Form = ({saveSummary}) => {
+
+    const [data, saveData] = useState({
+        brand: '',
+        year: '',
+        plan: ''
+    })
+    
+    const [error, saveError] = useState(false)
+
+    //get values from State
+    const { brand, year, plan } = data
+    
+    //read data from the form
+
+    const getInfromation = e => {
+        saveData({
+            ...data,
+            [e.target.name] : e.target.value
+        })
+    }
+ // OnSubmit
+    
+    const getPrice = e => {
+        e.preventDefault()
+
+        if (brand.trim() === '' || year.trim() === '' || plan.trim() === '') {
+            saveError(true)
+            return
+        } saveError(false)
+
+         // base year 2000
+        let result = 2000
+        
+        // get different value for each year
+        
+        const difference = getPriceYear(year)
+        
+        
+        //substract 3% for each year
+        result -= ((difference * 3) * result) / 100
+        
+        //American plus 15%, Asian plus 5% and European 30%
+        
+        result = calulateBrand(brand) * result
+        
+        
+        // Basic plan increases 20% or Full plan increases 50%
+        
+        const increasedPlan = getPlan(plan)
+        result = parseFloat(increasedPlan * result).toFixed(2)
+        
+        
+        saveSummary({
+            quotation: result,
+            data
+        })
+    
+    
+        //Total
+    }
+
+   
+
+
+
+
     return ( 
 
-        <form>
+        <form
+            onSubmit={getPrice}
+        >
+            
+            {error ? <Error>Todos los campos son obligatorios</Error> : null}
             <Field>
                 <Label>Marca</Label>
-                    <Select>
+                <Select
+                    name='brand'
+                    value={brand}
+                    onChange={getInfromation}
+                >
                         <option value=''>--Seleccione--</option>
                         <option value='americano'>Americano</option>
                         <option value='europeo'>Europeo</option>
@@ -55,7 +142,11 @@ const Form = () => {
             </Field>
             <Field>
                 <Label>Año</Label>
-                    <Select>                        
+                <Select
+                    name='year'
+                    value={year}
+                    onChange={getInfromation}
+                >                        
                         <option value="">-- Seleccione --</option>
                         <option value="2021">2021</option>
                         <option value="2020">2020</option>
@@ -75,16 +166,20 @@ const Form = () => {
                     type='radio'
                     name='plan'
                     value='basic'
+                    checked={plan === 'basic'}
+                    onChange={getInfromation}
                 /> Básico
 
                 <InputRadio
                     type='radio'
                     name='plan'
                     value='full'
+                    checked={plan === 'full'}
+                    onChange={getInfromation}
                     /> Completo
             </Field>
 
-            <Button type='button'>Cotizar</Button>
+            <Button type='submit'>Cotizar</Button>
         </form>
      );
 }
