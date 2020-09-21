@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import styled from '@emotion/styled'
+import PropTypes from 'prop-types'
 import { getPriceYear, calulateBrand, getPlan } from '../../Helper/index'
 
 
@@ -52,7 +53,7 @@ margin-bottom: 2rem
 
 `
 
-const Form = ({saveSummary}) => {
+const Form = ({saveSummary, saveLoading}) => {
 
     const [data, saveData] = useState({
         brand: '',
@@ -104,12 +105,25 @@ const Form = ({saveSummary}) => {
         const increasedPlan = getPlan(plan)
         result = parseFloat(increasedPlan * result).toFixed(2)
         
+        saveLoading(true)
         
-        saveSummary({
-            quotation: result,
-            data
-        })
-    
+        setTimeout(() => {
+
+            //Stops the spinner
+
+            saveLoading(false)
+
+            //Get the information
+            
+            saveSummary({
+                quotation: Number(result),
+                data
+            })
+                   
+        }, 3000)
+
+
+       
     
         //Total
     }
@@ -182,6 +196,11 @@ const Form = ({saveSummary}) => {
             <Button type='submit'>Cotizar</Button>
         </form>
      );
+}
+
+Form.propTypes = {
+    saveSummary: PropTypes.func.isRequired,
+    saveLoading: PropTypes.func.isRequired
 }
  
 export default Form;

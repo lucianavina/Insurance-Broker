@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled'
+import ProtoTypes from 'prop-types'
 import {firstLetterUpperCase} from '../../Helper/index.js'
 
 const SummaryContainer = styled.div`
@@ -28,4 +29,7 @@ const Summary = ({ data }) => {
      );
 }
  
+Summary.protoTypes = {
+    data: ProtoTypes.object.isRequired
+}
 export default Summary;

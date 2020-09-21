@@ -3,6 +3,7 @@ import Header from './Components/Header/index'
 import Form from './Components/Form/index'
 import Summary from './Components/Summary/index'
 import Result from './Components/Result/index'
+import Spinner from './Components/Spinner/index'
 
 
 import styled from '@emotion/styled'
@@ -27,6 +28,8 @@ function App() {
       plan: ''
     }
   })
+
+  const [loading, saveLoading ] = useState(false)
   
   //get data
 
@@ -42,14 +45,19 @@ function App() {
       <FormConatainer>
         <Form
           saveSummary={saveSummary}
-
+          saveLoading={saveLoading}
         />
+
+        {loading? <Spinner /> : null}
+
+        
+        
         <Summary 
           data={data}
         />
-        <Result 
-          quotation={quotation}
-        />
+
+        {!loading ?  <Result quotation={quotation} /> : null}
+       
         
       </FormConatainer>
       </Container>
